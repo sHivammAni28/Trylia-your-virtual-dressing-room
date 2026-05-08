@@ -2,23 +2,29 @@
  * API service for Trylia Contact Us functionality
  */
 
-const API_BASE_URL = process.env.REACT_APP_API_URL;
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 class ContactApiService {
   async submitContactForm(formData) {
     try {
       const response = await fetch(`${API_BASE_URL}/api/contact`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      let data = {};
+
+      try {
+        data = await response.json();
+      } catch (err) {
+        console.error("Invalid JSON response");
+      }
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to submit contact form');
+        throw new Error(data.message || "Failed to submit contact form");
       }
 
       return {
@@ -26,10 +32,10 @@ class ContactApiService {
         data: data,
       };
     } catch (error) {
-      console.error('Contact form submission error:', error);
+      console.error("Contact form submission error:", error);
       return {
         success: false,
-        error: error.message || 'Network error occurred',
+        error: error.message || "Network error occurred",
       };
     }
   }
@@ -37,16 +43,16 @@ class ContactApiService {
   async getFormOptions() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/contact/options`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to load form options');
+        throw new Error(data.message || "Failed to load form options");
       }
 
       return {
@@ -54,20 +60,20 @@ class ContactApiService {
         options: data.options,
       };
     } catch (error) {
-      console.error('Form options loading error:', error);
+      console.error("Form options loading error:", error);
       return {
         success: false,
-        error: error.message || 'Failed to load form options',
+        error: error.message || "Failed to load form options",
         // Fallback options
         options: {
           companySizes: [
             "1-10 employees",
-            "11-50 employees", 
+            "11-50 employees",
             "51-200 employees",
             "201-1000 employees",
             "1000+ employees",
             "Startup",
-            "Enterprise"
+            "Enterprise",
           ],
           inquiryTypes: [
             "Integration Request",
@@ -76,7 +82,7 @@ class ContactApiService {
             "Technical Support",
             "Partnership Opportunity",
             "Custom Solution",
-            "Other"
+            "Other",
           ],
           meetingModes: [
             "Google Meet",
@@ -84,22 +90,75 @@ class ContactApiService {
             "Microsoft Teams",
             "Phone Call",
             "In-Person Meeting",
-            "No Meeting Required"
+            "No Meeting Required",
           ],
           countries: [
-            "United States", "United Kingdom", "Canada", "Germany", "France", 
-            "India", "Australia", "Japan", "Brazil", "Mexico", "Italy", "Spain",
-            "Netherlands", "Sweden", "Norway", "Denmark", "Finland", "Switzerland",
-            "Austria", "Belgium", "Ireland", "New Zealand", "South Korea", "Singapore",
-            "Hong Kong", "UAE", "Saudi Arabia", "South Africa", "Argentina", "Chile",
-            "Colombia", "Peru", "Poland", "Czech Republic", "Hungary", "Romania",
-            "Bulgaria", "Croatia", "Slovenia", "Slovakia", "Estonia", "Latvia",
-            "Lithuania", "Portugal", "Greece", "Turkey", "Israel", "Egypt",
-            "Morocco", "Nigeria", "Kenya", "Ghana", "Thailand", "Vietnam",
-            "Philippines", "Indonesia", "Malaysia", "Taiwan", "China", "Russia",
-            "Ukraine", "Belarus", "Kazakhstan", "Other"
-          ]
-        }
+            "United States",
+            "United Kingdom",
+            "Canada",
+            "Germany",
+            "France",
+            "India",
+            "Australia",
+            "Japan",
+            "Brazil",
+            "Mexico",
+            "Italy",
+            "Spain",
+            "Netherlands",
+            "Sweden",
+            "Norway",
+            "Denmark",
+            "Finland",
+            "Switzerland",
+            "Austria",
+            "Belgium",
+            "Ireland",
+            "New Zealand",
+            "South Korea",
+            "Singapore",
+            "Hong Kong",
+            "UAE",
+            "Saudi Arabia",
+            "South Africa",
+            "Argentina",
+            "Chile",
+            "Colombia",
+            "Peru",
+            "Poland",
+            "Czech Republic",
+            "Hungary",
+            "Romania",
+            "Bulgaria",
+            "Croatia",
+            "Slovenia",
+            "Slovakia",
+            "Estonia",
+            "Latvia",
+            "Lithuania",
+            "Portugal",
+            "Greece",
+            "Turkey",
+            "Israel",
+            "Egypt",
+            "Morocco",
+            "Nigeria",
+            "Kenya",
+            "Ghana",
+            "Thailand",
+            "Vietnam",
+            "Philippines",
+            "Indonesia",
+            "Malaysia",
+            "Taiwan",
+            "China",
+            "Russia",
+            "Ukraine",
+            "Belarus",
+            "Kazakhstan",
+            "Other",
+          ],
+        },
       };
     }
   }
@@ -107,12 +166,12 @@ class ContactApiService {
   async checkServerHealth() {
     try {
       const response = await fetch(`${API_BASE_URL}/health`, {
-        method: 'GET',
+        method: "GET",
       });
 
       return response.ok;
     } catch (error) {
-      console.error('Server health check failed:', error);
+      console.error("Server health check failed:", error);
       return false;
     }
   }

@@ -3,3 +3,5 @@ backend/mp_env
 .vscode
 node_modules
 .env
+__pycache__/
+*.pyc
